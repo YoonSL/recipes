@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
+import foodPic from './assets/food.png';
 
 
 const RecipeAppHeader = (props) => (
@@ -32,23 +32,27 @@ const DirectoryView = (props) => (
 
 const DetailView = (props) => (
 
-    <div >
-        <h2 className = "nameHeader">{props.foods.name.toUpperCase()}</h2>
+    <div>
+        <img className = "foodspic" src={foodPic} alt ="food pic"/>
+        <p className = "nameHeader">{props.foods.name.toUpperCase()}</p>
+        <br/>
         <ul className='ingredients'>
-            <h3>INGREDIENTS</h3>
-            {props.foods.ingredients
+            <p className = "ingreTitle">INGREDIENTS</p>
+            <p>{props.foods.ingredients
                 .map((e, i) =>
                     <li
                         className='items'
                         key={i}>{e}</li>)}
+            </p>
         </ul>
         <ul className='instructions'>
-            <h3>INSTRUCTIONS</h3>
-            {props.foods.instructions
+            <p className = "instTitle">INSTRUCTIONS</p>
+            <p>{props.foods.instructions
                 .map((e, i) =>
                     <li
                         className='instruction-item'
                         key={i}>{e}</li>)}
+            </p>
         </ul>
     </div>
 )
