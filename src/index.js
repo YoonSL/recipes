@@ -10,21 +10,46 @@ const RecipeAppHeader = (props) => (
     </div>
 )
 const SearchForm = (props) => (
-    <form className = "leftBox">
+    <form>
         <input value = {props.searchVal} onChange = {props.inputHandler} className = "searchBox" placeholder = "Search Text Here"></input>
-        <button onClick = {props.selectRecipe}>search</button>
+        <button onClick = {props.selectedRecipe}>search</button>
         </form>
 )
 
 const RecipeCard = (props) => (
-    <div>{props.food.name}</div>
+    <div className='recipeview' onClick={props.userClick}>
+        <p>{props.selfoods.name.toUpperCase()}</p>
+    </div>
 )
 
 const DirectoryView = (props) => (
     <div>
-        <SearchForm inputHandler={props.inputHandler} searchVal={props.searchVal} selectRecipe={props.selectRecipe} />
-        {props.foods.map((food, i) => <RecipeCard foods={food} key={i} />)}
-        <div className='results'></div>
+        <SearchForm inputHandler={props.inputHandler} searchVal={props.searchVal} selectedRecipe={props.selectedRecipe} />
+        {props.selfoods.map((food, i) => <RecipeCard userClick = {props.userClick} selfoods={food} key={i} />)}
+        
+    </div>
+)
+
+const DetailView = (props) => (
+
+    <div >
+        <h2 className = "nameHeader">{props.foods.name.toUpperCase()}</h2>
+        <ul className='ingredients'>
+            <h3>INGREDIENTS</h3>
+            {props.foods.ingredients
+                .map((e, i) =>
+                    <li
+                        className='items'
+                        key={i}>{e}</li>)}
+        </ul>
+        <ul className='instructions'>
+            <h3>INSTRUCTIONS</h3>
+            {props.foods.instructions
+                .map((e, i) =>
+                    <li
+                        className='instruction-item'
+                        key={i}>{e}</li>)}
+        </ul>
     </div>
 )
 
@@ -123,7 +148,15 @@ class App extends React.Component{
             }
         ],
     input: '',
-    selectedRecipes : []
+    selectedRecipes : [],
+    clickedFood : 0
+}
+userClick = (e) => {
+    // console.log('hi');
+    e.preventDefault();
+    const clickedFood = this.state.food.filter(food => food.name.toUpperCase() === e.target.innerHTML)
+    this.setState({ clickedFood: clickedFood[0].id -1})
+    // console.log(clickedFood);
 }
 
     inputHandler = (e) => {
@@ -141,10 +174,9 @@ class App extends React.Component{
 
     selectedRecipe = (e) => {
         e.preventDefault();
-        const searchVal = this.state.searchVal.toLowerCase();
-        const includeRecipes = this.state.food.filter(food => food.name.toLowerCase().includes(searchVal));
-        this.setState({ selectedRecipes: includeRecipes })
-        console.log(this.selectedRecipes);
+        const searchVal = this.state.input.toLowerCase();
+        const includeFoods = this.state.food.filter(food => food.name.toLowerCase().includes(searchVal));
+        this.setState({ selectedRecipes: includeFoods })
     }
 
     render() {
@@ -154,15 +186,24 @@ class App extends React.Component{
             <div className ="headerTitle">
             <RecipeAppHeader title = "RecipeApp"/>
             </div>
+            <div className = "leftBox">
             <DirectoryView
-                foods={foodList}
+                selfoods={foodList}
+                searchHandler = {this.searchHandler}
                 inputHandler={this.inputHandler}
                 searchVal={this.state.searchVal}
-                selectRecipe={this.selectRecipe}
+                selectedRecipe={this.selectedRecipe}
+                userClick = {this.userClick}
             />
             </div>
+            <div className ="rightBox">
+            <DetailView 
+                foods={this.state.food[this.state.clickedFood]}
+                />
+                </div>
+            </div>
         )
-    }
+    }       
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
